@@ -2,7 +2,6 @@ var rest = require('restler');
 
 var base = "http://chaz.bp:3000/api/matchups/";
 
-var minute = 60000;
 var d = new Date();
 d.setDate(d.getDate() - 1);
 var matchup = { region: "us", start: d };
@@ -40,7 +39,7 @@ rest.post(base + "new", {data: matchup }).on('complete', function(match, respons
         rest.get(base + match.privateToken + "/").on('complete', function(data, response) {
           console.log(data);
         });
-      });
+      git });
     });
   });
 });
