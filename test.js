@@ -35,12 +35,12 @@ rest.post(base + "new", {data: matchup }).on('complete', function(match, respons
     console.log(data);
     rest.post(base + match.privateToken + "/join", {data: eric}).on('complete', function(data, response) {
       console.log(data);
-      //rest.post(base + match.privateToken + "/join", {data: rob}).on('complete', function(data, response) {
-      //  console.log(data);
+      rest.post(base + match.privateToken + "/join", {data: rob}).on('complete', function(data, response) {
+        console.log(data);
         rest.get(base + match.privateToken + "/").on('complete', function(data, response) {
           console.log(data);
         });
-      //});
+      });
     });
   });
 });
