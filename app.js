@@ -1,5 +1,5 @@
 require('classtool');
 
-var API = require('./lib/api').class();
+var API = require('./api/api').class();
 
 new API();
