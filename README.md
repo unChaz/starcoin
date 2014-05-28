@@ -17,10 +17,11 @@ Getting Started
  $ node test.js
 ```
 
+
 API
 ---
 
-> POST "/api/matchups/new"
+### POST "/api/matchups/new"
 
 
 #### parameters
@@ -36,11 +37,11 @@ name: (optional): Name of the matchup. Default: "SC2 Matchup"
 ```
 
 
-> POST "/api/matchups/:privateToken/join"
 
 
-#### parameters
-(all required)
+### POST "/api/matchups/:privateToken/join"
+
+#### parameters (all required)
 
 ```
 name: player name
@@ -59,8 +60,11 @@ http://:region.battle.net/api/sc2/profile/:webId/:realm/:name/
 ```
 
 
-> GET "/api/matchups/:publicToken"
 
+
+### GET "/api/matchups/:publicToken"
+
+#### response
 
 ```
 name: matchup name
