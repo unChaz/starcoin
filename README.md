@@ -1,5 +1,4 @@
-StarCoin
-========
+![StarCoin](http://i.imgur.com/N1F4Wov.jpg)
 
 Crowdfunded Bitcoin Starcraft Tournaments and Showmatches
 
