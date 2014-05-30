@@ -5,20 +5,24 @@ var connectUtils = require('connect/lib/utils');
 var config = require('./config');
 
 var app = express();
-app.use(express.bodyParser());
+
+app.configure(function() {
+  app.use(express.bodyParser());
+  app.use(express.static('./public'));
+
+  // Routing
+  app.use(app.router);
+
+  // Error handling
+  app.get('*', function(req, res) {
+    res.sendfile('./public/index.html');
+  });
+});
+
 var appServer = http.createServer(app);
 
 mongoose.connect(config.dbURI);
 
 appServer.listen(config.port);
-
-// Routing
-app.use(app.router);
-
-// Error handling
-app.all('*', function(err,req,res,next) {
-  console.log(err.stack);
-  res.send("Internal Server Error", 500);
-});
 
 module.exports = app;
