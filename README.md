@@ -1,5 +1,4 @@
-StarCoin
-========
+![StarCoin](http://i.imgur.com/N1F4Wov.jpg)
 
 Crowdfunded Bitcoin Starcraft Tournaments and Showmatches
 
@@ -44,7 +43,7 @@ name: (optional): Name of the matchup. Default: "SC2 Matchup"
 #### parameters (all required)
 
 ```
-name: player name
+name: player's battle.net name
 
 webId: battlenet id found in battlet.net profile URL
 
