@@ -301,7 +301,7 @@ span.blue {
 
 .cell {
   display: table-cell;
-  vertical-align: middle;
+  vertical-align: top;
   height:460px;
 }
 
