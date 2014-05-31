@@ -221,6 +221,90 @@ span.cyan {
 span.blue {
 	color:#028EC9;
 }
+
+.playerImage {
+	border-radius:15px;
+	float:left;
+	border:solid 2px #05bbf9;
+}
+
+.player-card-race-logo {
+	position:absolute;
+	padding:5px;
+	bottom:0;
+	right:0;
+}
+
+.race-image {
+	height:60px;
+	width:40px;
+}
+
+.pull-left {
+	float:left;
+}
+
+.pull-right {
+	float:right;
+}
+
+.playerCard {
+	position:relative;
+	color:#c2f7fb;
+	padding:10px;
+	margin:5px;
+	width: 350px;
+	height:115px;
+	border-radius:5px;
+	border:solid 2px #05bbf9;
+	background: -webkit-linear-gradient(#005383, #001233); /* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(#005383, #001233); /* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(#005383, #001233); /* For Firefox 3.6 to 15 */
+	background: linear-gradient(#005383, #001233); /* Standard syntax */
+}
+
+.qr-code {
+	width:250px;
+	height:250px;
+}
+
+.half-column {
+	width:50%;
+	float:left;
+}
+
+.VS {
+	float:left;
+	text-align:center;
+	padding-top:25px;
+	font-size: 2em;
+}
+
+#matchup-inner {
+	width:100%;
+	color:white;
+	display: table;
+}
+
+#matchup-outer {
+	text-align:center;
+	color:white;
+}
+
+.left-team {
+	float:left;
+}
+
+.right-team {
+	float:right;
+}
+
+.cell {
+  display: table-cell;
+  vertical-align: middle;
+  height:460px;
+}
+
 /* -----------------------------------------
   Header
 ----------------------------------------- */

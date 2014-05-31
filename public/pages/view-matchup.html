@@ -1,1 +1,144 @@
-<h1>View</h1>
+<div ng-controller="MatchupController" id="matchup-outer">
+
+<h2>{{errMsg}}</h2>
+
+<div ng-if="matchupLoaded">
+
+<div class="half-column">
+  <h1 style="font-size:5em">{{matchup.name}}</h1>
+  <h1 style="font-size:3em">{{matchup.gameType}}</h1>
+  <h2>{{status}}</h2>
+</div>
+
+<div class="half-column">
+  <h1>Prize: {{matchup.prizeAmount}} BTC</h1>
+  <img src="{{qrUrl}}" class="qr-code"></img>
+  <p>Donate to: {{matchup.bitcoinAddress}}</p>
+</div>
+
+
+<div id="matchup-inner" ng-if="matchup.players">
+
+  <div class="cell">
+    <div class="left-team">
+      <div ng-if="matchup.gameType !== 'FFA'"><h1>{{matchup.teams[0].name}}</h1></div>
+        <div class="playerCard" ng-repeat="player in matchup.teams[0].players">
+        <div style="height:{{player.portrait.h}}px;width:{{player.portrait.w}}px;overflow:hidden;"><img src="{{player.portrait.url}}" style="background-image:url({{player.portrait.url}});background-position: {{player.portrait.y}}px {{player.portrait.x}}px;"></img></div>
+        <div style="margin-top:-100px;">
+          <h1>{{player.name}}</h1>
+          <h3>{{player.career.primaryRace}}</h3>
+        </div>
+        <div>
+          Clan: {{player.clan}}<br> 
+          Rank: {{player.career.league}}
+          Address: {{player.bitcoinAddress}}
+        </div>
+        <div class="player-card-race-logo"><img src="/images/{{player.career.primaryRace}}.png" class="race-image"></img></div>
+        </div>
+        </div>
+      <div><!-- ng-if-->
+    </div><!-- left-team -->
+  </div>
+
+  <div class="VS" ng-if="matchup.teams">
+    <h1>VS</h1>
+  </div>
+
+  <div class="cell">
+    <div class="right-team">
+      <div ng-if="matchup.gameType !== 'FFA'"><h1>{{matchup.teams[1].name}}</h1></div>
+      <div class="playerCard" ng-repeat="player in matchup.teams[1].players">
+        <div style="height:{{player.portrait.h}}px;width:{{player.portrait.w}}px;overflow:hidden;"><img src="{{player.portrait.url}}" style="background-image:url({{player.portrait.url}});background-position: {{player.portrait.y}}px {{player.portrait.x}}px;"></img></div>
+        <div style="margin-top:-100px;">
+          <h2>{{player.name}}</h2>
+          <h3>{{player.career.primaryRace}}</h3>
+        </div>
+        <div>
+          Clan: {{player.clan}}<br> 
+          Rank: {{player.career.league}}
+        </div>
+        <div class="player-card-race-logo">
+          <img src="/images/{{player.career.primaryRace}}.png" class="race-image"></img>
+        </div>
+        </div>
+        </div>
+      <div>
+    </div><!-- right-team -->
+  </div>
+
+</div><!-- matchup-inner -->
+
+<div ng-if="matchup.results">
+  <h1>Results</h1>
+
+  <div class="results pull-left" style="width:30%;margin:20px;">
+    <table style="width:100%">
+      <tr>
+      <th>Map</th>
+      <th>Winner</th>
+      </tr>
+      <tr ng-repeat="match in matchup.results">
+        <td>{{match.map}}</td>
+        <td>Team {{match.winner}}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="results pull-right" style="width:30%;margin:20px;">
+    <table style="width:100%">
+      <tr>
+      <th>Team</th>
+      <th>Score</th>
+      </tr>
+      <tr ng-repeat="team in matchup.teams">
+        <td>{{team.name}}</td>
+        <td>{{team.wins}}</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+  <div ng-if="matchupPrivateToken">
+    <h1>Join The Matchup:</h1>
+    Battle.net Profile URL:<br>
+    <input type="text" ng-model="playerURL" /><br><br>
+    <div ng-if="matchup.gameType != 'FFA'">
+    Team:<br>
+    <input type="text" ng-model="team" /><br><br>
+    </div>
+    Bitcoin Address:<br>
+    <input type="text" ng-model="bitcoinAddress" /><br><br>
+    <button ng-click="joinMatchup()">Join</button>
+  </div><!-- Matchup form -->
+</div><!-- if matchup -->
+
+<div ng-if="nomatchup">
+  <h1>Host A Matchup:</h1>
+  <p>Name</p>
+  <input type="text" ng-model="name" /><br><br>
+  <p>Region</p>
+  <input type="radio" ng-model="region" name="region" value="us" style="width:10px">US</input><br>
+  <input type="radio" ng-model="region" name="region" value="us" style="width:10px">EU</input>
+  <p>Game Type</p>
+  <select ng-model="gameType">
+    <option value="1V1">1V1</option>
+    <option value="1V1">2V2</option>
+    <option value="1V1">3V3</option>
+    <option value="1V1">4V4</option>
+    <option value="1V1">FFA</option>
+  </select>
+  <p>Win Condition</p>
+  <select ng-model="winCondition">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="5">5</option>
+    <option value="7">7</option>
+  </select>
+  <p>Start Time</p>
+  <h2>TODO - Date/Time picker widget</h2>
+  <button ng-click="createMatchup()">Create</button>
+  <br><br>
+</div>
+
+</div><!-- matchup-outer -->

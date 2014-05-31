@@ -9,7 +9,9 @@ function spec(b) {
     server.post('/api/matchups/new', MC.create.bind(MC));
     server.post('/api/matchups/:token/join', MC.join.bind(MC));
     server.get('/api/matchups/:token', MC.get.bind(MC));
-
+    server.get('*', function(req, res) {
+      res.sendfile('./public/index.html');
+    });
   };
 
   return Router;

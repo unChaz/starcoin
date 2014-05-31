@@ -10,17 +10,34 @@ function spec(b) {
 
   MatchupController.prototype.create = function(req, res) {
     var self = this;
+    console.log("Create Matchup")
 
     var matchup = new Matchup();
-    //var wallet = new Wallet();
-
-    //matchup.wallet = wallet._id;
     matchup.name = req.body['name'];
     matchup.region = req.body['region'];
     matchup.start = req.body['start'] || Date.now();
     matchup.winCondition = req.body['winCondition'];
-    matchup.results = {};
-    //matchup.owner = req.body['owner']
+    matchup.results = [];
+
+    var gameType = req.body['gameType'];
+    if (gameType === "1V1") {
+      matchup.maxPlayers = 2;
+      matchup.gameType = gameType;
+    } else if (gameType === "2V2") {
+      matchup.maxPlayers = 4;
+      matchup.gameType = gameType;
+    } else if (gameType === "3V3") {
+      matchup.maxPlayers = 6;
+      matchup.gameType = gameType;
+    } else if (gameType === "4V4") {
+      matchup.maxPlayers = 8;
+      matchup.gameType = gameType;
+    } else if (gameType === "FFA") {
+      matchup.maxPlayers = 10;
+      matchup.gameType = gameType;
+    } else {
+      return res.send(500, "must supply a game type");
+    }
 
     if (!matchup.region) {
       return res.send(500, "must supply a region");
@@ -35,9 +52,8 @@ function spec(b) {
 
   MatchupController.prototype.join = function(req, res) {
     var self = this;
-    var token = req.params['token'];
-    var filters = {};
     var type;
+    var token = req.params['token']
 
     if (token.length == 22){
       type = 'privateToken';
@@ -45,55 +61,51 @@ function spec(b) {
       return res.send(404);
     }
 
-    filters[type] = token;
+    if(!req.body.bnetUrl) {
+      return res.send(500, "must supply a valid battlenet url")
+    }
+
+    filters = {'privateToken': token};
 
     Matchup.findOne(filters, function(err, matchup){
       if (err) console.log(err);
       if(matchup){
-        var bitcoinAddress = req.body.bitcoinAddress;
-
-        if (!bitcoinAddress) {
-          return res.send(500, "You must specify a bitcoin address");
-        }
-
+        var playerURL = req.body.bnetUrl;
+        var splitURL  = playerURL.split("/profile/");
+        var credentials = splitURL[1].split("/");
         var params = {
-          name: req.body.name,
-          realm: req.body.realm,
-          webId: req.body.webId,
-          region: matchup.region,
-        };
-
-        var playerRegistered;
-        matchup.players.forEach(function(existingPlayer) {
-          if (params.webId == existingPlayer.webId && params.name == existingPlayer.name) {
-            playerRegistered = true;
-          }
-        });
-
-        if (playerRegistered) {
-          return res.send(500, "player already joined");
-        } else {
-          if (matchup.players.length > config.max_match_size) {
-            return res.send(500, "matchup is full");
-          }
-
-          matchupMonitor.getPlayerData(params, function(err, player) {
-            if (err || !player) {
-              console.log("player not found " + player);
-              return res.send(404, "player not found");
-            }
-
-            player.wins = 0;
-            matchup.players.push(player);
-            matchup.save(function(err){
-            if(err) {
-              console.log("error saving matchup: " + err);
-              return res.send(500);
-            }
-            return res.send(200, "player joined");
-            });
-          });
+          webId: credentials[0],
+          realm: credentials[1],
+          name: credentials[2],
+          region: matchup.region
         }
+
+        var teamName;
+        if(matchup.gameType === "FFA" || matchup.gameType === "1V1") {
+            teamName = params.name;
+        } else {
+            teamName = req.body.team;
+        }
+        if (!teamName) return res.send(500, "Must specify a team name");
+
+
+        matchupMonitor.getPlayerData(params, function(err, player) {
+          if (err || !player) {
+            console.log("player not found " + player);
+            return res.send(404, "player not found");
+          }
+
+          matchup.addPlayer(player, teamName, function(err) {
+              if (err) res.send(500, err);
+              matchup.save(function(err){
+                  if(err) {
+                    console.log("error saving matchup: " + err);
+                    return res.send(500);
+                  }
+                  return res.send(200, "player joined");
+              });        
+          });
+        });
       } else {
         return res.send(404, "matchup not found.");
       }
@@ -120,7 +132,7 @@ function spec(b) {
       if (err) console.log(err);
       if(matchup){
         // Update the matchup (until we build a cron job to do it).
-        if(matchup.start < Date.now() && matchup.players.length > 1) {
+        if(matchup.start < Date.now() && matchup.teams.length > 1) {
           matchupMonitor.updateMatchup(matchup, function(err, matchup) {
             if (err) {
               console.log(err);

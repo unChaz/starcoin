@@ -14,14 +14,15 @@ function spec(b) {
     publicToken: {type: String, unique: true}, // For public data
     name: {type: String, default: "SC2 Matchup"},
     region: {type: String, default: "us"},
-    players: Array,
-    //wallet: {type: ObjectID, unique: true},
-    //owner: {type: ObjectId, index: true},
+    teams: Array,
     start: Date,
     ended: {type: Boolean, default: false},
     winCondition: {type: Number, default: 3},
-    results: Object,
+    results: Array,
     winners: Array,
+    gameType: String,
+    maxPlayers: Number,
+    prizeAmount: {type: Number, default:0}
   });
 
   Matchup.methods.generatePrivateToken = function() {
@@ -34,42 +35,89 @@ function spec(b) {
 
   Matchup.methods.updateMatches = function(matches, callback) {
     var self = this;
-    var keys = _.keys(matches);
-    keys.forEach(function(matchTime) {
-      if(!matches[matchTime] || new Date(matchTime) < self.start) {
-        delete matches[matchTime];
+    var matchIndexes = self._getMatchIndexes(self.results);
+    for(var i=0;i<matches.length;i++){
+      if(matchIndexes[matches[i].time]) {
+        delete matches[i];
       } else {
-        if(!self.results) {
-          self.results = {};
-        }
-        if(!self.ended) {
-          self.results[matchTime] = matches[matchTime];
-          matches[matchTime].results.forEach(function(result) {
-            self.players.forEach(function(player) {
-              if (player.webId == result.player && result.result === "WIN") {
-                player.wins ++;
-              }
-            });
-            self.players.forEach(function(player) {
-              if (player.wins >= self.winCondition) {
-                self.ended = true;
-              }
-            });
-          });
+        self.teams[matches[i].winner].wins++;
+        if(self.teams[matches[i].winner].wins == self.winCondition && !self.ended) {
+          self.winners  = self.teams[matches[i].winner];
+          self.ended = true;
         }
       }
-    });  
-
-    if(self.ended) {
-      self.players.forEach(function(player) {
-        if (player.wins >= self.winCondition) {
-          self.winners.push(player);
-        }
-      });
-    }     
-
+    };
+    matches.forEach(function(result){
+      if(result != null) {
+        self.results.push(result);
+      }
+    })
     return callback(null);
   };
+
+  Matchup.methods.addPlayer = function(player, team, callback) {
+    var self = this;
+
+    if (self.gameType === "FFA" ){
+      if(self.teams.length < self.maxPlayers) {
+        self.teams.push(
+          {
+            name: player.name,
+            wins: 0,
+            players: [
+              player
+            ]
+          }
+        );
+        return callback(null);
+      } else {
+        return callback("Matchup is full.");
+      }
+    } else if (self._getTeamNumber(team)) {
+      var teamNumber = self._getTeamNumber(team);
+      if(self.teams[teamNumber].players.length == (self.maxPlayers/2)) {
+        return callback("Team is full");
+      } else {
+        self.teams[teamNumber].players.push(player);
+        return callback();
+      }
+    } else {
+      if(self.teams.length == 2) {
+        return callback("There are already 2 teams");
+      } else {
+        self.teams.push(
+          {
+            name: team,
+            wins: 0,
+            players: [
+              player
+            ]
+          }
+        );
+        return callback(null)
+      }
+    }
+  };
+
+  Matchup.methods._getTeamNumber = function(teamName) {
+    var self = this;
+    var i = 0;
+    self.teams.forEach(function(team){
+      if(team.name === teamName) {
+        return i;
+      }
+      i++;
+    });
+    return null;
+  };
+
+  Matchup.methods._getMatchIndexes = function(matches) {
+    var indexes = {};
+    matches.forEach(function(match) {
+      indexes[match.time] = true;
+    });
+    return indexes;
+  }
 
   return Matchup = mongoose.model('Matchup', Matchup);
 };

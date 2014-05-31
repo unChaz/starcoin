@@ -14,9 +14,6 @@ app.configure(function() {
   app.use(app.router);
 
   // Error handling
-  app.get('*', function(req, res) {
-    res.sendfile('./public/index.html');
-  });
 });
 
 var appServer = http.createServer(app);
