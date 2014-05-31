@@ -3,21 +3,24 @@ var rest = require('restler');
 var base = "http://chaz.bp:3000/api/matchups/";
 var d = new Date();
 d.setDate(d.getDate() - 50);
-var matchup = { region: "us", start: d, gameType: "1V1" };
+var matchup = { region: "us", start: d, gameType: "4V4" };
 
 var chaz = {
   bnetUrl: "http://us.battle.net/sc2/en/profile/2549153/1/Muse/",
-  bitcoinAddress: "12345"
+  bitcoinAddress: "12345",
+  team: "Noobs"
 }
 
 var eric = {
   bnetUrl: "http://us.battle.net/sc2/en/profile/3866178/1/remaeus/",
-  bitcoinAddress: "12345"
+  bitcoinAddress: "12345",
+  team: "Nerds"
 }
 
 var rob = {
   bnetUrl: "http://us.battle.net/sc2/en/profile/5356317/1/unusualbob/",
-  bitcoinAddress: "12345"
+  bitcoinAddress: "12345",
+  team: "Noobs"
 }
 
 
