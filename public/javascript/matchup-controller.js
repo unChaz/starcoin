@@ -2,6 +2,8 @@ angular.module('starcoinApp').controller('MatchupController', function($scope, $
 
   var baseURL = "http://chaz.bp:3000/api/matchups/";
 
+  $scope.nomatchup = true;
+
   function loadMatchup(id) {
     $http.get(baseURL + id).
     success(function(data) {
@@ -61,9 +63,7 @@ angular.module('starcoinApp').controller('MatchupController', function($scope, $
       $http.post(baseURL + $scope.matchupPrivateToken + "/join", params).
       success(function(data) {
           $scope.response = data;
-      }).error(function(data){
-      $scope.errMsg = data;
-    });
+      });
     }
   };
 });

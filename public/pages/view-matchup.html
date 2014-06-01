@@ -1,6 +1,6 @@
 <div ng-controller="MatchupController" id="matchup-outer">
 
-<h2>{{errMsg}}</h2>
+<p style="color:red;">{{errMsg}}</p>
 
 <div ng-if="matchupLoaded">
 
@@ -15,7 +15,6 @@
   <img src="{{qrUrl}}" class="qr-code"></img>
   <p>Donate to: {{matchup.bitcoinAddress}}</p>
 </div>
-
 
 <div id="matchup-inner" ng-if="matchup.teams">
 
