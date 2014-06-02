@@ -2,7 +2,11 @@ angular.module('starcoinApp').controller('MatchupController', function($scope, $
 
   var baseURL = "http://chaz.bp:3000/api/matchups/";
 
-  $scope.nomatchup = true;
+  $scope.matchup = null;
+
+  $scope.nomatchup = function() {
+    return $scope.matchup == null;
+  }
 
   function loadMatchup(id) {
     $http.get(baseURL + id).
@@ -20,6 +24,10 @@ angular.module('starcoinApp').controller('MatchupController', function($scope, $
         $scope.qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + data.bitcoinAddress;
         $scope.matchupLoaded = true;
         $scope.nomatchup = false;
+        $scope.matchupnotstarted = true;
+        if (data.started) $scope.matchupnotstarted = false; 
+    }).error(function(data){
+      $scope.errMsg = "Not Found";
     });
   }
 
@@ -27,43 +35,51 @@ angular.module('starcoinApp').controller('MatchupController', function($scope, $
     loadMatchup($stateParams.id);
   }
 
-  $scope.test = "PARAMS: " + JSON.stringify($stateParams);
-
   $scope.getMatchup = function(){
     loadMatchup($scope.matchupId);
   };
 
-  $scope.createMatchup = function(){
+  $scope.createMatchup = function(params){
     var params = {
-      region: $scope.region,
-      winCondition: $scope.winCondition,
-      start: $scope.startTime,
-      name: $scope.name,
-      gameType: $scope.gameType
+      region: params.region,
+      winCondition: params.winCondition,
+      start: params.startTime,
+      name: params.name,
+      gameType: params.gameType
     }
 
-    $http.post(baseURL + "new",params).
-    success(function(data) {
-        $scope.matchup = data;
-        $scope.matchupPrivateToken = data.privateToken;
-        $state.transitionTo('matchups', {id: data.privateToken})
-    }).error(function(data){
-      $scope.errMsg = data;
-    });
+    if (!params.region || !params.winCondition || !params.name || !params.gameType) {
+      $scope.errMsg = "All fields required.";
+    } else {
+      $http.post(baseURL + "new",params).
+      success(function(data) {
+          $scope.matchup = data;
+          $scope.matchupPrivateToken = data.privateToken;
+          $state.transitionTo('matchups', {id: data.privateToken})
+      }).error(function(data){
+        $scope.errMsg = data;
+      });
+    }
   };
 
-  $scope.joinMatchup = function(){
+  $scope.joinMatchup = function(playerParams){
     if ($scope.matchupPrivateToken) {
       var params = {
-        bnetUrl: $scope.playerURL,
-        team: $scope.team,
-        bitcoinAddress: $scope.bitcoinAddress
+        bnetUrl: playerParams.playerURL,
+        team: playerParams.team,
+        bitcoinAddress: playerParams.bitcoinAddress
       }
-      console.log(params)
-      $http.post(baseURL + $scope.matchupPrivateToken + "/join", params).
-      success(function(data) {
-          $scope.response = data;
-      });
+
+      if(!params.bnetUrl || !params.team ||!params.bitcoinAddress) {
+        $scope.errMsg = "All fields required.";
+      } else {
+        $http.post(baseURL + $scope.matchupPrivateToken + "/join", params).
+        success(function(data) {
+          window.location.reload();
+        }).error(function(data){
+          $scope.errMsg = "Not Found";
+        });;
+      }
     }
   };
 });

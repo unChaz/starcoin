@@ -195,12 +195,11 @@ function spec(b) {
     teams.forEach(function(team){
       team.players.forEach(function(player) {
         if(player.webId === id) {
-          winner = teamNumber;
+          return teamNumber;
         }
       });
       teamNumber++;
     });
-    return winner;
   }
 
   MatchupMonitor.prototype._formatResults = function(results, matchup) {

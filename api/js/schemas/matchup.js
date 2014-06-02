@@ -16,6 +16,7 @@ function spec(b) {
     region: {type: String, default: "us"},
     teams: Array,
     start: Date,
+    started: {type: Boolean, default: false},
     ended: {type: Boolean, default: false},
     winCondition: {type: Number, default: 3},
     results: Array,

@@ -29,7 +29,7 @@
         </div>
         <div>
           Clan: {{player.clan}}<br> 
-          Rank: {{player.career.league}}
+          Rank: {{player.career.league}}<br> 
           Address: {{player.bitcoinAddress}}
         </div>
         <div class="player-card-race-logo"><img src="/images/{{player.career.primaryRace}}.png" class="race-image"></img></div>
@@ -39,7 +39,7 @@
     </div><!-- left-team -->
   </div>
 
-  <div class="VS" ng-if="matchup.teams">
+  <div class="VS" ng-if="matchup.teams[0] && matchup.teams[1]">
     <h1>VS</h1>
   </div>
 
@@ -54,7 +54,8 @@
         </div>
         <div>
           Clan: {{player.clan}}<br> 
-          Rank: {{player.career.league}}
+          Rank: {{player.career.league}}<br> 
+          Address: {{player.bitcoinAddress}}
         </div>
         <div class="player-card-race-logo">
           <img src="/images/{{player.career.primaryRace}}.png" class="race-image"></img>
@@ -97,49 +98,52 @@
   </div>
 </div>
 
-  <div ng-if="matchupPrivateToken">
-    <div ng-if="!matchup.results">
-      <h1>Join The Matchup:</h1>
-      Battle.net Profile URL:<br>
-      <input type="text" ng-model="playerURL" /><br><br>
-      <div ng-if="matchup.gameType != 'FFA'">
-      Team:<br>
-      <input type="text" ng-model="team" /><br><br>
-      </div>
-      Bitcoin Address:<br>
-      <input type="text" ng-model="bitcoinAddress" /><br><br>
-      <button ng-click="joinMatchup()">Join</button>
+<div ng-if="matchupnotstarted">
+  <form ng-if="matchupPrivateToken" ng-submit="joinMatchup(playerParams)">
+    <h1>Add Players</h1>
+    Battle.net Profile URL:<br>
+    <input type="text" ng-model="playerParams.playerURL" /><br><br>
+    <div ng-if="matchup.gameType != 'FFA'">
+    Team:<br>
+    <input type="text" ng-model="playerParams.team" /><br><br>
     </div>
-  </div><!-- Matchup form -->
+    Bitcoin Address:<br>
+    <input type="text" ng-model="playerParams.bitcoinAddress" /><br><br>
+    <button type="submit">
+        Join
+    </button>
+  </form><!-- Matchup form -->
 </div><!-- if matchup -->
 
-<div ng-if="nomatchup">
-  <h1>Host A Matchup:</h1>
+</div><!-- matchup-outer -->
+
+<form ng-if="nomatchup()" ng-submit="createMatchup(matchupParams)">
+  <h1>Host A Matchup</h1>
   <p>Name</p>
-  <input type="text" ng-model="name" /><br><br>
+  <input type="text" ng-model="matchupParams.name" /><br><br>
   <p>Region</p>
-  <input type="radio" ng-model="region" name="region" value="us" style="width:10px">US</input><br>
-  <input type="radio" ng-model="region" name="region" value="us" style="width:10px">EU</input>
+  <input type="radio" ng-model="matchupParams.region" name="region" value="us" style="width:10px">US</input><br>
+  <input type="radio" ng-model="matchupParams.region" name="region" value="us" style="width:10px">EU</input>
   <p>Game Type</p>
-  <select ng-model="gameType">
+  <select ng-model="matchupParams.gameType">
     <option value="1V1">1V1</option>
-    <option value="1V1">2V2</option>
-    <option value="1V1">3V3</option>
-    <option value="1V1">4V4</option>
-    <option value="1V1">FFA</option>
+    <option value="2V2">2V2</option>
+    <option value="3V3">3V3</option>
+    <option value="4V4">4V4</option>
+    <option value="FFA">FFA</option>
   </select>
   <p>Win Condition</p>
-  <select ng-model="winCondition">
+  <select ng-model="matchupParams.winCondition">
     <option value="1">1</option>
-    <option value="2">2</option>
     <option value="3">3</option>
     <option value="5">5</option>
     <option value="7">7</option>
   </select>
   <p>Start Time</p>
   <h2>TODO - Date/Time picker widget</h2>
-  <button ng-click="createMatchup()">Create</button>
-  <br><br>
-</div>
+  <button type="submit">
+      Create
+  </button>
+</form>
 
-</div><!-- matchup-outer -->
+</div>

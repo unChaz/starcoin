@@ -36,10 +36,12 @@ function spec(b) {
       matchup.maxPlayers = 10;
       matchup.gameType = gameType;
     } else {
+      console.log("error creating matchup: " + JSON.stringify(req.body));
       return res.send(500, "must supply a game type");
     }
 
     if (!matchup.region) {
+      console.log("error creating matchup: " + req.body);
       return res.send(500, "must supply a region");
     }
     matchup.generatePrivateToken();
@@ -62,6 +64,7 @@ function spec(b) {
     }
 
     if(!req.body.bnetUrl) {
+      console.log("error joining matchup: " + req.body);
       return res.send(500, "must supply a valid battlenet url")
     }
 
@@ -86,7 +89,10 @@ function spec(b) {
         } else {
             teamName = req.body.team;
         }
-        if (!teamName) return res.send(500, "Must specify a team name");
+        if (!teamName) {
+          console.log("error joining matchup: " + req.body);
+          return res.send(500, "Must specify a team name");
+        }
 
 
         matchupMonitor.getPlayerData(params, function(err, player) {
@@ -96,7 +102,10 @@ function spec(b) {
           }
 
           matchup.addPlayer(player, teamName, function(err) {
-              if (err) res.send(500, err);
+              if (err) {
+                console.log("error joining matchup: " + err);
+                return res.send(500, err);
+              }
               matchup.save(function(err){
                   if(err) {
                     console.log("error saving matchup: " + err);
