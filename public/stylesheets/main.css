@@ -271,6 +271,7 @@ span.blue {
 .half-column {
 	width:50%;
 	float:left;
+	padding:10px;
 }
 
 .VS {
@@ -302,7 +303,13 @@ span.blue {
 .cell {
   display: table-cell;
   vertical-align: top;
-  height:460px;
+  padding:30px;
+}
+
+.middle-cell {
+	display: table-cell;
+	vertical-align:middle;
+	min-height:250px;
 }
 
 .modal {
@@ -394,7 +401,6 @@ ul#menu li{
 	
 }
 ul#menu li a{
-	font-family: 'Oswald', Helvetica, Arial, sans-serif;
 	font-weight:700;
 	font-size:14px;
 	text-transform:uppercase;

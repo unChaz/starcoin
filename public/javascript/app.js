@@ -12,7 +12,7 @@ starcoinApp.config(function($stateProvider, $urlRouterProvider) {
 
     .state('matchups', {
         url: '/matchups/:id',
-        templateUrl: 'pages/view-matchup.html',
+        templateUrl: 'pages/matchup.html',
         controller: 'MatchupController'      
     })
 
