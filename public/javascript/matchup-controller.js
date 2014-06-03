@@ -49,7 +49,7 @@ angular.module('starcoinApp').controller('MatchupController', function($scope, $
     }
 
     if (!params.region || !params.winCondition || !params.name || !params.gameType) {
-      $scope.errMsg = "All fields required.";
+      $scope.createFormError = "All fields required.";
     } else {
       $http.post(baseURL + "new",params).
       success(function(data) {
@@ -57,7 +57,7 @@ angular.module('starcoinApp').controller('MatchupController', function($scope, $
           $scope.matchupPrivateToken = data.privateToken;
           $state.transitionTo('matchups', {id: data.privateToken})
       }).error(function(data){
-        $scope.errMsg = data;
+        $scope.createFormError = data;
       });
     }
   };
@@ -71,13 +71,13 @@ angular.module('starcoinApp').controller('MatchupController', function($scope, $
       }
 
       if(!params.bnetUrl || !params.team ||!params.bitcoinAddress) {
-        $scope.errMsg = "All fields required.";
+        $scope.joinFormError = "All fields required.";
       } else {
         $http.post(baseURL + $scope.matchupPrivateToken + "/join", params).
         success(function(data) {
           window.location.reload();
         }).error(function(data){
-          $scope.errMsg = "Not Found";
+          $scope.joinFormError = "Not Found";
         });;
       }
     }
